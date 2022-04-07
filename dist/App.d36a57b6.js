@@ -34967,8 +34967,8 @@ const Pet = ({
 
   return (
     /*#__PURE__*/
-    (0, _jsxRuntime.jsxs)("a", {
-      href: `/details/${id}`,
+    (0, _jsxRuntime.jsxs)(_reactRouterDom.Link, {
+      to: `/details/${id}`,
       className: "pet",
       children: [
       /*#__PURE__*/
@@ -35202,20 +35202,74 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _react = require("react");
+
+var _reactRouterDom = require("react-router-dom");
+
 var _jsxRuntime = require("react/jsx-runtime");
 
-const Details = () => {
-  return (
-    /*#__PURE__*/
-    (0, _jsxRuntime.jsx)("h2", {
-      children: "hi!"
-    })
-  );
-};
+class Details extends _react.Component {
+  state = {
+    loading: true
+  };
 
-var _default = Details;
+  async componentDidMount() {
+    const res = await fetch(`http://pets-v2.dev-apis.com/pets?id=${this.props.match.params.id}`);
+    const json = await res.json();
+    this.setState(Object.assign({
+      loading: false
+    }, json.pets[0]));
+  }
+
+  render() {
+    if (this.state.loading) {
+      return (
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("h2", {
+          children: "Loading..."
+        })
+      );
+    }
+
+    const {
+      animal,
+      breed,
+      city,
+      state,
+      description,
+      name
+    } = this.state;
+    return (
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsxs)("div", {
+        className: "details",
+        children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("h1", {
+          children: name
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("h2", {
+          children: `${animal} - ${breed} - ${city}, ${state}`
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsxs)("button", {
+          children: ["Adopt ", name]
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("p", {
+          children: description
+        })]
+      })
+    );
+  }
+
+}
+
+var _default = (0, _reactRouterDom.withRouter)(Details);
+
 exports.default = _default;
-},{"react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = require("react");
@@ -35235,15 +35289,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const App = () => {
   return (
     /*#__PURE__*/
-    (0, _jsxRuntime.jsxs)("div", {
-      children: [
+    (0, _jsxRuntime.jsx)("div", {
+      children:
       /*#__PURE__*/
-      (0, _jsxRuntime.jsx)("h1", {
-        children: "Adopt Me"
-      }),
-      /*#__PURE__*/
-      (0, _jsxRuntime.jsx)(_reactRouterDom.BrowserRouter, {
-        children:
+      (0, _jsxRuntime.jsxs)(_reactRouterDom.BrowserRouter, {
+        children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("header", {
+          children:
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsx)(_reactRouterDom.Link, {
+            to: "/",
+            children:
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("h1", {
+              children: "Adopt Me"
+            })
+          })
+        }),
         /*#__PURE__*/
         (0, _jsxRuntime.jsxs)(_reactRouterDom.Switch, {
           children: [
@@ -35261,8 +35324,8 @@ const App = () => {
             /*#__PURE__*/
             (0, _jsxRuntime.jsx)(_SearchParams.default, {})
           })]
-        })
-      })]
+        })]
+      })
     })
   );
 };
@@ -35302,7 +35365,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50579" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52410" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
