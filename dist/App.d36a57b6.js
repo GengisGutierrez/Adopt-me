@@ -35077,6 +35077,21 @@ function usedBreedList(animal) {
   }, [animal]);
   return [breedList, status];
 }
+},{"react":"../node_modules/react/index.js"}],"ThemeContext.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+const ThemeContext =
+/*#__PURE__*/
+(0, _react.createContext)(["green", () => {}]);
+var _default = ThemeContext;
+exports.default = _default;
 },{"react":"../node_modules/react/index.js"}],"SearchParams.js":[function(require,module,exports) {
 "use strict";
 
@@ -35091,6 +35106,8 @@ var _Results = _interopRequireDefault(require("./Results"));
 
 var _useBreedList = _interopRequireDefault(require("./useBreedList"));
 
+var _ThemeContext = _interopRequireDefault(require("./ThemeContext"));
+
 var _jsxRuntime = require("react/jsx-runtime");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -35103,6 +35120,7 @@ const SearchParams = () => {
   const [breed, setBreed] = (0, _react.useState)("");
   const [pets, setPets] = (0, _react.useState)([]);
   const [breeds] = (0, _useBreedList.default)(animal);
+  const [theme, setTheme] = (0, _react.useContext)(_ThemeContext.default);
   (0, _react.useEffect)(() => {
     requestPets();
   }, []);
@@ -35180,7 +35198,42 @@ const SearchParams = () => {
           })]
         }),
         /*#__PURE__*/
+        (0, _jsxRuntime.jsxs)("label", {
+          htmlFor: "theme",
+          children: ["Theme",
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsxs)("select", {
+            value: theme,
+            onChange: e => setTheme(e.target.value),
+            onBlur: e => setTheme(e.target.value),
+            children: [
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("option", {
+              value: "darkbue",
+              children: "Dark Blue"
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("option", {
+              value: "peru",
+              children: "Peru"
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("option", {
+              value: "chartreuse",
+              children: "Chart Reuse"
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)("option", {
+              value: "mediumorchid",
+              children: "Medium Orchid"
+            })]
+          })]
+        }),
+        /*#__PURE__*/
         (0, _jsxRuntime.jsx)("button", {
+          style: {
+            backgroundColor: theme
+          },
           children: "Submit"
         })]
       }),
@@ -35194,7 +35247,80 @@ const SearchParams = () => {
 
 var _default = SearchParams;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./Results":"Results.js","./useBreedList":"useBreedList.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"Details.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./Results":"Results.js","./useBreedList":"useBreedList.js","./ThemeContext":"ThemeContext.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"Carousel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+class Carousel extends _react.Component {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      active: 0
+    });
+
+    _defineProperty(this, "handleIndexClick", event => {
+      console.log(this);
+      this.setState({
+        active: +event.target.dataset.index
+      });
+    });
+  }
+
+  render() {
+    const {
+      active
+    } = this.state;
+    const {
+      images
+    } = this.props;
+    return (
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsxs)("div", {
+        className: "carousel",
+        children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("img", {
+          src: images[active],
+          alt: "animal"
+        }),
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)("div", {
+          className: "carousel-smaller",
+          children: images.map((photo, index) =>
+          /*#__PURE__*/
+          // eslint-disable-next-line
+          (0, _jsxRuntime.jsx)("img", {
+            src: photo,
+            "data-index": index,
+            onClick: this.handleIndexClick,
+            className: index === active ? "active" : "",
+            alt: "animal thumbnail"
+          }, photo))
+        })]
+      })
+    );
+  }
+
+}
+
+_defineProperty(Carousel, "defaultProps", {
+  images: ["http://pets-images.dev-apis.com/pets/none.jpg"]
+});
+
+var _default = Carousel;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"ErrorBoundary.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35208,10 +35334,146 @@ var _reactRouterDom = require("react-router-dom");
 
 var _jsxRuntime = require("react/jsx-runtime");
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+class ErrorBoundary extends _react.Component {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      hasError: false,
+      redirect: false
+    });
+  }
+
+  static getDerivedStateFromError() {
+    return {
+      hasError: true
+    };
+  }
+
+  componentDidCatch(error, info) {
+    console.log("ErrorBoundary caught an error", error, info);
+    setTimeout(() => this.setState({
+      redirect: true
+    }), 5000);
+  }
+
+  render() {
+    if (this.state.redirect) {
+      return (
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)(_reactRouterDom.Redirect, {
+          to: "/"
+        })
+      );
+    } else if (this.state.hasError) {
+      return (
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsxs)("h2", {
+          children: ["This listing has an error. ",
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsx)(_reactRouterDom.Link, {
+            to: "/",
+            children: "Click here"
+          }), " to go back to home page or wait five seconds."]
+        })
+      );
+    }
+
+    return this.props.children;
+  }
+
+}
+
+var _default = ErrorBoundary;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"Modal.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _reactDom = require("react-dom");
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const modalRoot = document.getElementById("modal");
+
+const Modal = ({
+  children
+}) => {
+  const elRef = (0, _react.useRef)(null);
+
+  if (!elRef.current) {
+    elRef.current = document.createElement("div");
+  }
+
+  (0, _react.useEffect)(() => {
+    modalRoot.appendChild(elRef.current);
+    return () => modalRoot.removeChild(elRef.current);
+  }, []);
+  return (
+    /*#__PURE__*/
+    (0, _reactDom.createPortal)(
+    /*#__PURE__*/
+    (0, _jsxRuntime.jsx)("div", {
+      children: children
+    }), elRef.current)
+  );
+};
+
+var _default = Modal;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"Details.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = DetailsWithErrorBoundary;
+
+var _react = require("react");
+
+var _reactRouterDom = require("react-router-dom");
+
+var _Carousel = _interopRequireDefault(require("./Carousel"));
+
+var _ErrorBoundary = _interopRequireDefault(require("./ErrorBoundary"));
+
+var _ThemeContext = _interopRequireDefault(require("./ThemeContext"));
+
+var _Modal = _interopRequireDefault(require("./Modal"));
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 class Details extends _react.Component {
-  state = {
-    loading: true
-  };
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      loading: true,
+      showModal: false
+    });
+
+    _defineProperty(this, "toggleModal", () => this.setState({
+      showModal: !this.state.showModal
+    }));
+
+    _defineProperty(this, "adopt", () => window.location = "http://bit.ly/pet-adopt");
+  }
 
   async componentDidMount() {
     const res = await fetch(`http://pets-v2.dev-apis.com/pets?id=${this.props.match.params.id}`);
@@ -35237,13 +35499,19 @@ class Details extends _react.Component {
       city,
       state,
       description,
-      name
+      name,
+      images,
+      showModal
     } = this.state;
     return (
       /*#__PURE__*/
       (0, _jsxRuntime.jsxs)("div", {
         className: "details",
         children: [
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)(_Carousel.default, {
+          images: images
+        }),
         /*#__PURE__*/
         (0, _jsxRuntime.jsx)("h1", {
           children: name
@@ -35253,23 +35521,67 @@ class Details extends _react.Component {
           children: `${animal} - ${breed} - ${city}, ${state}`
         }),
         /*#__PURE__*/
-        (0, _jsxRuntime.jsxs)("button", {
-          children: ["Adopt ", name]
+        (0, _jsxRuntime.jsx)(_ThemeContext.default.Consumer, {
+          children: ([theme]) =>
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsxs)("button", {
+            onClick: this.toggleModal,
+            style: {
+              backgroundColor: theme
+            },
+            children: ["Adopt ", name]
+          })
         }),
         /*#__PURE__*/
         (0, _jsxRuntime.jsx)("p", {
           children: description
-        })]
+        }), showModal ?
+        /*#__PURE__*/
+        (0, _jsxRuntime.jsx)(_Modal.default, {
+          children:
+          /*#__PURE__*/
+          (0, _jsxRuntime.jsxs)("div", {
+            children: [
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsxs)("h1", {
+              children: ["Would you like to adopt ", name, "?"]
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsxs)("div", {
+              className: "buttons",
+              children: [
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsx)("button", {
+                onClick: this.adopt,
+                children: "Yes"
+              }),
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsx)("button", {
+                onClick: this.toggleModal,
+                children: "No"
+              })]
+            })]
+          })
+        }) : null]
       })
     );
   }
 
 }
 
-var _default = (0, _reactRouterDom.withRouter)(Details);
+const DetailsWithRouter = (0, _reactRouterDom.withRouter)(Details);
 
-exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
+function DetailsWithErrorBoundary() {
+  return (
+    /*#__PURE__*/
+    (0, _jsxRuntime.jsx)(_ErrorBoundary.default, {
+      children:
+      /*#__PURE__*/
+      (0, _jsxRuntime.jsx)(DetailsWithRouter, {})
+    })
+  );
+}
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./Carousel":"Carousel.js","./ErrorBoundary":"ErrorBoundary.js","./ThemeContext":"ThemeContext.js","./Modal":"Modal.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 var _react = require("react");
@@ -35282,49 +35594,57 @@ var _SearchParams = _interopRequireDefault(require("./SearchParams"));
 
 var _Details = _interopRequireDefault(require("./Details"));
 
+var _ThemeContext = _interopRequireDefault(require("./ThemeContext"));
+
 var _jsxRuntime = require("react/jsx-runtime");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const App = () => {
+  const theme = (0, _react.useState)("darkblue");
   return (
     /*#__PURE__*/
-    (0, _jsxRuntime.jsx)("div", {
+    (0, _jsxRuntime.jsx)(_ThemeContext.default.Provider, {
+      value: theme,
       children:
       /*#__PURE__*/
-      (0, _jsxRuntime.jsxs)(_reactRouterDom.BrowserRouter, {
-        children: [
+      (0, _jsxRuntime.jsx)("div", {
+        children:
         /*#__PURE__*/
-        (0, _jsxRuntime.jsx)("header", {
-          children:
-          /*#__PURE__*/
-          (0, _jsxRuntime.jsx)(_reactRouterDom.Link, {
-            to: "/",
-            children:
-            /*#__PURE__*/
-            (0, _jsxRuntime.jsx)("h1", {
-              children: "Adopt Me"
-            })
-          })
-        }),
-        /*#__PURE__*/
-        (0, _jsxRuntime.jsxs)(_reactRouterDom.Switch, {
+        (0, _jsxRuntime.jsxs)(_reactRouterDom.BrowserRouter, {
           children: [
           /*#__PURE__*/
-          (0, _jsxRuntime.jsx)(_reactRouterDom.Route, {
-            path: "/details/:id",
+          (0, _jsxRuntime.jsx)("header", {
             children:
             /*#__PURE__*/
-            (0, _jsxRuntime.jsx)(_Details.default, {})
+            (0, _jsxRuntime.jsx)(_reactRouterDom.Link, {
+              to: "/",
+              children:
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsx)("h1", {
+                children: "Adopt Me"
+              })
+            })
           }),
           /*#__PURE__*/
-          (0, _jsxRuntime.jsx)(_reactRouterDom.Route, {
-            path: "/",
-            children:
+          (0, _jsxRuntime.jsxs)(_reactRouterDom.Switch, {
+            children: [
             /*#__PURE__*/
-            (0, _jsxRuntime.jsx)(_SearchParams.default, {})
+            (0, _jsxRuntime.jsx)(_reactRouterDom.Route, {
+              path: "/details/:id",
+              children:
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsx)(_Details.default, {})
+            }),
+            /*#__PURE__*/
+            (0, _jsxRuntime.jsx)(_reactRouterDom.Route, {
+              path: "/",
+              children:
+              /*#__PURE__*/
+              (0, _jsxRuntime.jsx)(_SearchParams.default, {})
+            })]
           })]
-        })]
+        })
       })
     })
   );
@@ -35337,7 +35657,7 @@ _reactDom.default.render(
   /*#__PURE__*/
   (0, _jsxRuntime.jsx)(App, {})
 }), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./SearchParams":"SearchParams.js","./Details":"Details.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./SearchParams":"SearchParams.js","./Details":"Details.js","./ThemeContext":"ThemeContext.js","react/jsx-runtime":"../node_modules/react/jsx-runtime.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -35365,7 +35685,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52410" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52060" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
